@@ -1,0 +1,55 @@
+body{
+    position: relative;
+    background-color: black;
+    font-size: 20px;
+    color: white;
+}
+
+#scoreboard {
+    height: 50px;
+    width: 100%;
+}
+
+#current-score-elm {
+    position: absolute;
+    top: 15px;
+    left: 30%;
+}
+
+#max-score-elm {
+    position: absolute;
+    top: 15px;
+    left: 60%;
+}
+
+#gameboard {
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    height: 880px;
+    width: 880px;
+    background-color: white;
+    z-index: 9000;
+}
+
+.wall {
+    position: absolute;
+    background-color: black;
+}
+
+.enemy {
+    position: absolute;
+    background-color: red;
+}
+
+.player {
+    position: absolute;
+    background-color: green;
+}
+
+.exit {
+    position: absolute;
+    background-color: yellow;
+}

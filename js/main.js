@@ -1,0 +1,51 @@
+//Access DOM Object - GameBoard
+const createDomElement = (className) => {
+    const gameBoard = document.getElementById("gameboard");
+    const newEntity = document.createElement("div");
+
+    newEntity.className = className;
+    gameBoard.appendChild(newEntity);
+    
+    return newEntity;
+}
+
+
+const drawDomElement = (element,row) => {
+    element.domElement.style.left = element.positionX + "px";
+    element.domElement.style.top = element.positionY + "px";
+
+    element.domElement.style.width =  "80px";
+    element.domElement.style.height = "80px";
+}
+
+
+const game = new Game(createDomElement,drawDomElement);
+game.start();
+
+document.addEventListener("keydown", function (event) {
+    /*Every time an event is fired, you can get the information about it in a variable 
+  that can be passed inside the function of the event. Using developer tools it's possible to
+  see all the properties it has to be able to interact with it.*/
+  
+    switch (event.key) {
+      case "d":
+        game.movePlayer("right");
+        console.log(game.player);
+        break;
+      case "a":
+        game.movePlayer("left");
+        console.log(game.player);
+        break;
+      case "w":
+        game.movePlayer("up");
+        console.log(game.player);
+        break;
+      case "s":
+        game.movePlayer("down");
+        console.log(game.player);
+        break;
+    }
+  });
+
+
+  
