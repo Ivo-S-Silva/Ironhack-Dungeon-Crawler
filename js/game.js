@@ -14,28 +14,33 @@ class Game {
   // Vai ser preciso fazer um forEach dentro da detectCollision para determinar qual objeto está logo ao lado do jogador
 
   levelDesigner(selectedLevel) {
-    const wall = new Wall();
-    
     for (let row = 0; row < selectedLevel.length; row++) {
       for (let column = 0; column < selectedLevel.length; column++) {
         switch (selectedLevel[row][column]) {
           case 0:
+            const path = new Path();
+            path.domElement = this.createDomElement("path");
+            path.positionX = column * 80;
+            path.positionY = row * 80;
+            this.drawDomElement(path);
+            drawnLevel[row].splice(column,0,path);
             break;
           case 1:
+            const wall = new Wall();
             wall.domElement = createDomElement("wall");
             wall.positionX = column * 80;
             wall.positionY = row * 80;
             drawDomElement(wall);
-            console.log(wall.domElement);
-            this.drawnLevel[row].push(wall.domElement);
+            drawnLevel[row].splice(column,0,wall);
             break;
           case 2:
-            wall.domElement = createDomElement("enemy");
-            wall.positionX = column * 80;
-            wall.positionY = row * 80;
-            drawDomElement(wall);
+            const enemy = new Enemy();
+            enemy.domElement = createDomElement("enemy");
+            enemy.positionX = column * 80;
+            enemy.positionY = row * 80;
+            drawDomElement(enemy);
             // Mudar futuramente para em vez de wall ser o objeto enemy
-            this.drawnLevel[row].push(wall.domElement);
+            drawnLevel[row].splice(column,0,enemy);
             break;
           case 3:
             this.player = new Player();
@@ -43,15 +48,16 @@ class Game {
             this.player.positionX = column * 80;
             this.player.positionY = row * 80;
             drawDomElement(this.player);
-            this.drawnLevel[row].push(this.player.domElement);
+            drawnLevel[row].splice(column,0,this.player);
             break;
           case 4:
-            wall.domElement = createDomElement("exit");
-            wall.positionX = column * 80;
-            wall.positionY = row * 80;
-            drawDomElement(wall);
+            const exit = new Exit();
+            exit.domElement = createDomElement("exit");
+            exit.positionX = column * 80;
+            exit.positionY = row * 80;
+            drawDomElement(exit);
             // Mudar futuramente para em vez de wall ser o objeto Exit
-            this.drawnLevel[row].push(wall.domElement);
+            drawnLevel[row].splice(column,0,exit);
             break;
         }
       }
@@ -62,36 +68,48 @@ class Game {
     this.levelDesigner(this.selectedLevel);
   }
 
-  detectCollision(entity, obstacle) {
-    for (let row = 0; row < selectedLevel.length; row++) {
-      for (let column = 0; column < selectedLevel.length; column++) {
+  detectCollision(entity, drawnLevel) {
+    console.log(drawnLevel);
+    for (let row = 0; row < drawnLevel.length; row++) {
+      for (let column = 0; column < drawnLevel.length; column++) {
         if (
-            entity.positionX < obstacle[row][column].positionX + obstacle[row][column].width &&
-            entity.positionX + entity.width > obstacle[row][column].positionX &&
-            entity.positionY < obstacle[row][column].positionY + obstacle[row][column].height &&
-            entity.height + entity.positionY > obstacle[row][column].positionY
-          ) {
-            return true;
-          }
+          entity.positionX <
+            drawnLevel[row][column].positionX + drawnLevel[row][column].width &&
+          entity.positionX + entity.width > drawnLevel[row][column].positionX &&
+          entity.positionY <
+            drawnLevel[row][column].positionY +
+              drawnLevel[row][column].height &&
+          entity.height + entity.positionY >
+            drawnLevel[row][column].positionY &&
+          drawnLevel[row][column].domElement.className === "wall"
+        ) {
+          return true;
+        }
       }
     }
-
-    
   }
 
   movePlayer(direction) {
     switch (direction) {
       case "left":
+        if (!this.detectCollision(this.player, this.drawnLevel)) {
           this.player.moveLeft();
+        }
         break;
       case "right":
-        this.player.moveRight();
+        if (!this.detectCollision(this.player, this.drawnLevel)) {
+          this.player.moveRight();
+        }
         break;
       case "up":
-        this.player.moveUp();
+        if (!this.detectCollision(this.player, this.drawnLevel)) {
+          this.player.moveUp();
+        }
         break;
       case "down":
-        this.player.moveDown();
+        if (!this.detectCollision(this.player, this.drawnLevel)) {
+          this.player.moveDown();
+        }
         break;
     }
 
@@ -106,8 +124,38 @@ class Wall {
   constructor() {
     this.positionX = 1;
     this.positionY = 1;
-    this.height;
-    this.width;
+    this.height = 80;
+    this.width = 80;
+    this.domElement = 0;
+  }
+}
+
+class Path {
+    constructor() {
+      this.positionX = 1;
+      this.positionY = 1;
+      this.height = 80;
+      this.width = 80;
+      this.domElement = 0;
+    }
+  }
+
+class Exit {
+    constructor() {
+      this.positionX = 1;
+      this.positionY = 1;
+      this.height = 80;
+      this.width = 80;
+      this.domElement = 0;
+    }
+}
+
+class Enemy {
+  constructor() {
+    this.positionX = 1;
+    this.positionY = 1;
+    this.height = 80;
+    this.width = 80;
     this.domElement = 0;
   }
 }
@@ -116,8 +164,8 @@ class Player {
   constructor() {
     this.positionX = 1;
     this.positionY = 1;
-    this.height;
-    this.width;
+    this.height = 80;
+    this.width = 80;
     this.domElement = 0;
   }
 

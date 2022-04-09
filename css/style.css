@@ -39,6 +39,12 @@ body{
     background-color: black;
 }
 
+.path {
+    position: absolute;
+    background-color: white;
+    z-index: -1;
+}
+
 .enemy {
     position: absolute;
     background-color: red;
@@ -47,6 +53,7 @@ body{
 .player {
     position: absolute;
     background-color: green;
+    z-index: 9000;
 }
 
 .exit {

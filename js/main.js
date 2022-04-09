@@ -14,8 +14,8 @@ const drawDomElement = (element,row) => {
     element.domElement.style.left = element.positionX + "px";
     element.domElement.style.top = element.positionY + "px";
 
-    element.domElement.style.width =  "80px";
-    element.domElement.style.height = "80px";
+    element.domElement.style.width = element.width + "px";
+    element.domElement.style.height = element.height + "px";
 }
 
 
@@ -48,4 +48,3 @@ document.addEventListener("keydown", function (event) {
   });
 
 
-  
