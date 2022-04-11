@@ -1,10 +1,11 @@
 class Game {
   constructor(createDomElement, drawDomElement) {
     this.player = null;
-    this.gameBoard = document.getElementById("gameBoard");
+    this.gameBoard = document.getElementById("gameboard");
     this.createDomElement = createDomElement;
     this.drawDomElement = drawDomElement;
-    this.selectedLevel = levelOne;
+    this.selectedLevel = 1;
+    this.currentLevel = levels[this.selectedLevel];
     this.drawnLevel = drawnLevel;
     this.keysGrabbed = 0;
     this.exitBlock = null;
@@ -12,20 +13,26 @@ class Game {
 
   start() {
     this.heysGrabbed = 0;
-    this.levelDesigner(this.selectedLevel);
+    this.levelDesigner(this.currentLevel);
 
     let intervalId = setInterval(() => {
-      if (this.keysGrabbed === 3 && this.player.positionX === this.exitBlock.positionX && this.player.positionY === this.exitBlock.positionY){
-        this.levelDesigner(this.selectedLevel)
+      if (this.keysGrabbed === 0 && this.player.positionX === this.exitBlock.positionX && this.player.positionY === this.exitBlock.positionY){
+        this.selectedLevel ++;
+        this.currentLevel = levels[this.selectedLevel];
+        this.gameBoard.innerHTML = "";
+
+        this.levelDesigner(this.currentLevel);
+        console.log(this.drawnLevel);
+        this.keysGrabbed = 0;
       }
     }, 10);
   
   }
 
-  levelDesigner(selectedLevel) {
-    for (let row = 0; row < selectedLevel.length; row++) {
-      for (let column = 0; column < selectedLevel.length; column++) {
-        switch (selectedLevel[row][column]) {
+  levelDesigner(currentLevel) {
+    for (let row = 0; row < currentLevel.length; row++) {
+      for (let column = 0; column < currentLevel.length; column++) {
+        switch (currentLevel[row][column]) {
           case 0:
             const path = new Path();
             path.domElement = this.createDomElement("path");
@@ -65,7 +72,6 @@ class Game {
             this.exitBlock.positionX = column * 80;
             this.exitBlock.positionY = row * 80;
             drawDomElement(this.exitBlock);
-            // Mudar futuramente para em vez de wall ser o objeto Exit
             drawnLevel[row].splice(column, 0, this.exitBlock);
             break;
         }
@@ -75,45 +81,45 @@ class Game {
 
  
 
-  pathingCollision(selectedLevel, direction) {
+  pathingCollision(currentLevel, direction) {
     /* Get player coordinates based on the level grid
     instead of the dom position */
     let x = this.player.positionX / 80;
     let y = this.player.positionY / 80;
     switch (direction) {
       case "left":
-        switch (selectedLevel[y][x - 1]){
+        switch (currentLevel[y][x - 1]){
           case 1: return false;
           case 2:
             this.grabKey(this.drawnLevel[y][x - 1]);
-            this.selectedLevel[y][x - 1] = 0;
+            this.currentLevel[y][x - 1] = 0;
             return true;
           default: return true;
         }
       case "right":
-        switch (selectedLevel[y][x + 1]){
+        switch (currentLevel[y][x + 1]){
           case 1: return false;
           case 2:
             this.grabKey(this.drawnLevel[y][x + 1]);
-            this.selectedLevel[y][x + 1] = 0;
+            this.currentLevel[y][x + 1] = 0;
             return true;
           default: return true;
         }
       case "up":
-        switch (selectedLevel[y - 1][x]){
+        switch (currentLevel[y - 1][x]){
           case 1: return false;
           case 2:
             this.grabKey(this.drawnLevel[y - 1][x]);
-            this.selectedLevel[y - 1][x] = 0;
+            this.currentLevel[y - 1][x] = 0;
             return true;
           default: return true;
         }
       case "down":
-        switch (selectedLevel[y + 1][x]){
+        switch (currentLevel[y + 1][x]){
           case 1: return false;
           case 2:
             this.grabKey(this.drawnLevel[y + 1][x]);
-            this.selectedLevel[y + 1][x] = 0;
+            this.currentLevel[y + 1][x] = 0;
             return true;
           default: return true;
         }
@@ -132,22 +138,22 @@ class Game {
   movePlayer(direction) {
     switch (direction) {
       case "left":
-        if (this.pathingCollision(this.selectedLevel, "left")) {
+        if (this.pathingCollision(this.currentLevel, "left")) {
           this.player.moveLeft();
         }
         break;
       case "right":
-        if (this.pathingCollision(this.selectedLevel, "right")) {
+        if (this.pathingCollision(this.currentLevel, "right")) {
           this.player.moveRight();
         }
         break;
       case "up":
-        if (this.pathingCollision(this.selectedLevel, "up")) {
+        if (this.pathingCollision(this.currentLevel, "up")) {
           this.player.moveUp();
         }
         break;
       case "down":
-        if (this.pathingCollision(this.selectedLevel, "down")) {
+        if (this.pathingCollision(this.currentLevel, "down")) {
           this.player.moveDown();
         }
         break;
