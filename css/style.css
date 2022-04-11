@@ -45,9 +45,9 @@ body{
     z-index: -1;
 }
 
-.enemy {
+.key {
     position: absolute;
-    background-color: red;
+    background-color: yellow;
 }
 
 .player {
@@ -58,5 +58,5 @@ body{
 
 .exit {
     position: absolute;
-    background-color: yellow;
+    background-color: blue;
 }
