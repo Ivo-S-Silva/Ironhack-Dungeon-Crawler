@@ -60,3 +60,8 @@ body{
     position: absolute;
     background-color: blue;
 }
+
+.enemy {
+    position: absolute;
+    background-color: red;
+}
