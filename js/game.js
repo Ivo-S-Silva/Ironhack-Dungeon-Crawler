@@ -10,7 +10,6 @@ class Game {
     this.keysGrabbed = 0;
     this.exitBlock = null;
     this.enemiesArray = [];
-    this.enemyDirection = "left";
   }
 
   start() {
@@ -173,22 +172,22 @@ class Game {
 
     
 
-    if (this.enemyDirection === "left"){
+    if (enemy.direction === "left"){
       if (currentLevel[y][x - 1] !== 1){
         enemy.moveLeft();
         this.drawDomElement(enemy);
       } else if (currentLevel[y][x - 1] === 1){
-        this.enemyDirection = "right";
+        enemy.direction = "right";
         this.drawDomElement(enemy);
       }
     }
 
-    if (this.enemyDirection === "right") {
+    if (enemy.direction === "right") {
       if (currentLevel[y][x + 1] !== 1){
         enemy.moveRight();
         this.drawDomElement(enemy);
       } else if (currentLevel[y][x + 1] === 1){
-        this.enemyDirection = "left";
+        enemy.direction = "left";
         this.drawDomElement(enemy);
       }
     }
@@ -270,6 +269,7 @@ class Enemy {
     this.height = 40;
     this.width = 40;
     this.domElement = 0;
+    this.direction = "left";
   }
 
   moveRight() {
