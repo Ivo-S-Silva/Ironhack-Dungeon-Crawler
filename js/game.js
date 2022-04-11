@@ -22,34 +22,56 @@ class Game {
 
     let intervalId = setInterval(() => {
       //function to change the exit display to open
-      if(this.keysGrabbed === 6){
-        this.exitArea.forEach(element => {
+      if (this.keysGrabbed === 6) {
+        this.exitArea.forEach((element) => {
           element.domElement.className = "exit-open";
+
+          // Functiontransfer to the next level
+          if (
+            this.player.positionX === element.positionX &&
+            this.player.positionY === element.positionY
+          ) {
+            this.selectedLevel++;
+            this.currentLevel = levels[this.selectedLevel];
+            this.gameBoard.innerHTML = "";
+            this.levelDesigner(this.currentLevel);
+            this.keysGrabbed = 0;
+          }
         });
       }
 
-      // Function to open the exit and transfer to the next level
-      if (
-        this.keysGrabbed === 6 &&
-        this.player.positionX === this.exitBlock.positionX &&
-        this.player.positionY === this.exitBlock.positionY
-      ) {
-        this.selectedLevel++;
-        this.currentLevel = levels[this.selectedLevel];
-        this.gameBoard.innerHTML = "";
-        this.levelDesigner(this.currentLevel);
-        this.keysGrabbed = 0;
-      }
-      //Enemy movement
-      if (moveCounter === 5) {
-        this.enemiesArray.forEach((enemy) =>
-          this.moveEnemy(enemy, this.currentLevel)
+      // Time management for enemy movement and enemy-player collision detection
+      if (moveCounter >= 5) {
+        this.enemiesArray.forEach((enemy) =>{
+          this.moveEnemy(enemy, this.currentLevel);
+          this.playerEnemyCollision(enemy);
+        }
         );
         moveCounter = 0;
       }
 
       moveCounter++;
+
+
+      
     }, 10);
+  }
+
+  playerEnemyCollision(enemy){
+    if (
+      this.player.positionX <enemy.positionX +enemy.width &&
+      this.player.positionX + this.player.width >enemy.positionX &&
+      this.player.positionY < enemy.positionY +enemy.height &&
+      this.player.height + this.player.positionY >enemy.positionY
+    ) {
+      // completely resets the level and every item caught
+      this.gameBoard.innerHTML = "";
+      // Fix the level reset to show keys again
+      this.currentLevel = levels[this.selectedLevel];
+      console.log(this.currentLevel);
+      this.levelDesigner(this.currentLevel);
+      this.keysGrabbed = 0;
+    }
   }
 
   levelDesigner(currentLevel) {
@@ -206,8 +228,7 @@ class Game {
       if (currentLevel[y][x - 1] !== 1) {
         enemy.moveLeft();
         currentLevel[y][x - 1] = 5;
-        currentLevel[y][x] = 0
-        if(this.player.positionX === enemy.positionX && this.player.positionY === enemy.positionY) console.log("touch");
+        currentLevel[y][x] = 0;
         this.drawDomElement(enemy);
       } else if (currentLevel[y][x - 1] === 1) {
         enemy.direction = "right";
@@ -219,8 +240,7 @@ class Game {
       if (currentLevel[y][x + 1] !== 1) {
         enemy.moveRight();
         currentLevel[y][x + 1] = 5;
-        currentLevel[y][x] = 0
-        if(this.player.positionX === enemy.positionX && this.player.positionY === enemy.positionY) console.log("touch");
+        currentLevel[y][x] = 0;
         this.drawDomElement(enemy);
       } else if (currentLevel[y][x + 1] === 1) {
         enemy.direction = "left";
