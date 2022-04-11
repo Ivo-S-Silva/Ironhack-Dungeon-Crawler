@@ -16,7 +16,7 @@ class Game {
 
     let intervalId = setInterval(() => {
       if (this.keysGrabbed === 3 && this.player.positionX === this.exitBlock.positionX && this.player.positionY === this.exitBlock.positionY){
-        console.log("GET OUT");
+        this.levelDesigner(this.selectedLevel)
       }
     }, 10);
   
