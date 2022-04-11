@@ -1,37 +1,60 @@
 class Game {
   constructor(createDomElement, drawDomElement) {
-    this.player = null;
     this.gameBoard = document.getElementById("gameboard");
+    this.currentLevelDom = document.getElementById("current-level");
     this.createDomElement = createDomElement;
     this.drawDomElement = drawDomElement;
     this.selectedLevel = 2;
     this.currentLevel = levels[this.selectedLevel];
     this.drawnLevel = drawnLevel;
     this.keysGrabbed = 0;
+    this.player = null;
     this.exitBlock = null;
     this.enemiesArray = [];
+    this.exitArea = [];
   }
 
   start() {
-    this.heysGrabbed = 0;
+    this.keysGrabbed = 0;
     this.levelDesigner(this.currentLevel);
 
+    let moveCounter = 0;
+
     let intervalId = setInterval(() => {
+      //function to change the exit display to open
+      if(this.keysGrabbed === 6){
+        this.exitArea.forEach(element => {
+          element.domElement.className = "exit-open";
+        });
+      }
+
       // Function to open the exit and transfer to the next level
-      if (this.keysGrabbed === 6 && this.player.positionX === this.exitBlock.positionX && this.player.positionY === this.exitBlock.positionY){
-        this.selectedLevel ++;
+      if (
+        this.keysGrabbed === 6 &&
+        this.player.positionX === this.exitBlock.positionX &&
+        this.player.positionY === this.exitBlock.positionY
+      ) {
+        this.selectedLevel++;
         this.currentLevel = levels[this.selectedLevel];
         this.gameBoard.innerHTML = "";
         this.levelDesigner(this.currentLevel);
         this.keysGrabbed = 0;
       }
       //Enemy movement
-      this.enemiesArray.forEach(enemy => this.moveEnemy(enemy, this.currentLevel));
-    }, 100);
-  
+      if (moveCounter === 5) {
+        this.enemiesArray.forEach((enemy) =>
+          this.moveEnemy(enemy, this.currentLevel)
+        );
+        moveCounter = 0;
+      }
+
+      moveCounter++;
+    }, 10);
   }
 
   levelDesigner(currentLevel) {
+    this.currentLevelDom.innerText = this.selectedLevel;
+
     for (let row = 0; row < currentLevel.length; row++) {
       for (let column = 0; column < currentLevel.length; column++) {
         switch (currentLevel[row][column]) {
@@ -69,11 +92,12 @@ class Game {
             break;
           case 4:
             this.exitBlock = new Exit();
-            this.exitBlock.domElement = createDomElement("exit");
+            this.exitBlock.domElement = createDomElement("exit-closed");
             this.exitBlock.positionX = column * 40;
             this.exitBlock.positionY = row * 40;
             this.drawDomElement(this.exitBlock);
             drawnLevel[row].splice(column, 0, this.exitBlock);
+            this.exitArea.push(this.exitBlock);
             break;
           case 5:
             const enemy = new Enemy();
@@ -95,47 +119,55 @@ class Game {
     let y = entity.positionY / 40;
     switch (direction) {
       case "left":
-        switch (currentLevel[y][x - 1]){
-          case 1: return false;
+        switch (currentLevel[y][x - 1]) {
+          case 1:
+            return false;
           case 2:
             this.grabKey(this.drawnLevel[y][x - 1]);
             this.currentLevel[y][x - 1] = 0;
             return true;
-          default: return true;
+          default:
+            return true;
         }
       case "right":
-        switch (currentLevel[y][x + 1]){
-          case 1: return false;
+        switch (currentLevel[y][x + 1]) {
+          case 1:
+            return false;
           case 2:
             this.grabKey(this.drawnLevel[y][x + 1]);
             this.currentLevel[y][x + 1] = 0;
             return true;
-          default: return true;
+          default:
+            return true;
         }
       case "up":
-        switch (currentLevel[y - 1][x]){
-          case 1: return false;
+        switch (currentLevel[y - 1][x]) {
+          case 1:
+            return false;
           case 2:
             this.grabKey(this.drawnLevel[y - 1][x]);
             this.currentLevel[y - 1][x] = 0;
             return true;
-          default: return true;
+          default:
+            return true;
         }
       case "down":
-        switch (currentLevel[y + 1][x]){
-          case 1: return false;
+        switch (currentLevel[y + 1][x]) {
+          case 1:
+            return false;
           case 2:
             this.grabKey(this.drawnLevel[y + 1][x]);
             this.currentLevel[y + 1][x] = 0;
             return true;
-          default: return true;
+          default:
+            return true;
         }
     }
   }
 
-  grabKey(key){
+  grabKey(key) {
     key.domElement.remove();
-    this.keysGrabbed ++;
+    this.keysGrabbed++;
   }
 
   movePlayer(direction) {
@@ -164,35 +196,37 @@ class Game {
     this.drawDomElement(this.player);
   }
 
-  moveEnemy(enemy,currentLevel){
+  moveEnemy(enemy, currentLevel) {
     /* Get player coordinates based on the level grid
     instead of the dom position */
     let x = enemy.positionX / 40;
     let y = enemy.positionY / 40;
 
-    
-
-    if (enemy.direction === "left"){
-      if (currentLevel[y][x - 1] !== 1){
+    if (enemy.direction === "left") {
+      if (currentLevel[y][x - 1] !== 1) {
         enemy.moveLeft();
+        currentLevel[y][x - 1] = 5;
+        currentLevel[y][x] = 0
+        if(this.player.positionX === enemy.positionX && this.player.positionY === enemy.positionY) console.log("touch");
         this.drawDomElement(enemy);
-      } else if (currentLevel[y][x - 1] === 1){
+      } else if (currentLevel[y][x - 1] === 1) {
         enemy.direction = "right";
         this.drawDomElement(enemy);
       }
     }
 
     if (enemy.direction === "right") {
-      if (currentLevel[y][x + 1] !== 1){
+      if (currentLevel[y][x + 1] !== 1) {
         enemy.moveRight();
+        currentLevel[y][x + 1] = 5;
+        currentLevel[y][x] = 0
+        if(this.player.positionX === enemy.positionX && this.player.positionY === enemy.positionY) console.log("touch");
         this.drawDomElement(enemy);
-      } else if (currentLevel[y][x + 1] === 1){
+      } else if (currentLevel[y][x + 1] === 1) {
         enemy.direction = "left";
         this.drawDomElement(enemy);
       }
     }
-
-
   }
 }
 

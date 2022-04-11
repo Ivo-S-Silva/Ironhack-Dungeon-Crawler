@@ -1,7 +1,8 @@
 body{
     position: relative;
-    background-color: black;
+    background-image: url(../resources/images/stone-texture.jpeg);
     font-size: 20px;
+    font-family: monospace;
     color: white;
 }
 
@@ -10,16 +11,23 @@ body{
     width: 100%;
 }
 
-#current-score-elm {
+#current-level-elm {
     position: absolute;
     top: 15px;
     left: 30%;
 }
 
-#max-score-elm {
+#menu {
+    background-image: url(../resources/images/papyrus.webp);
+    background-position-x: center;
+    background-position-y: -30px;
     position: absolute;
-    top: 15px;
-    left: 60%;
+    left: 1px;
+    right: 0;
+    height: 650px;
+    width: 170px;
+    z-index: 9000;
+    color: black;
 }
 
 #gameboard {
@@ -30,38 +38,67 @@ body{
     margin-right: auto;
     height: 880px;
     width: 880px;
-    background-color: white;
+    background-image: url(../resources/images/path.webp);
     z-index: 9000;
 }
 
 .wall {
     position: absolute;
     background-color: black;
+    background-image: url(../resources/images/brick-texture.jpeg);
 }
 
 .path {
     position: absolute;
-    background-color: white;
     z-index: -1;
 }
 
 .key {
     position: absolute;
-    background-color: yellow;
+    background-image: url(../resources/images/key.webp);
+    background-position: center;
+    background-size: cover;
 }
 
 .player {
     position: absolute;
-    background-color: green;
     z-index: 9000;
+    background-image: url(../resources/images/player.png);
+    background-position: center;
+    background-size: cover;
 }
 
-.exit {
+.exit-closed {
     position: absolute;
-    background-color: blue;
+    background-image: url(../resources/images/water-off.webp);
+    background-position: center;
+    background-size: cover;
+}
+
+.exit-open {
+    position: absolute;
+    background-image: url(../resources/images/water-on.webp);
+    background-position: center;
+    background-size: cover;
 }
 
 .enemy {
     position: absolute;
-    background-color: red;
+    background-image: url(../resources/images/blade.png);
+    background-position: center;
+    background-size: cover;
+}
+
+h1, h2{
+    width: 170px;
+}
+
+h1{
+    font-size: 1.5em;
+    text-decoration: underline;
+}
+
+h2{
+    font-size: 1.3em;
+    margin-bottom: 5px;
 }

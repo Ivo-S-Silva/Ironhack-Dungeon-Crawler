@@ -3,6 +3,7 @@ const createDomElement = (className) => {
     const gameBoard = document.getElementById("gameboard");
     const newEntity = document.createElement("div");
 
+
     newEntity.className = className;
     gameBoard.appendChild(newEntity);
     
