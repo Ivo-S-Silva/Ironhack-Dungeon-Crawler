@@ -7,6 +7,7 @@ class Game {
     this.selectedLevel = levelOne;
     this.drawnLevel = drawnLevel;
     this.keysGrabbed = 0;
+    this.exitBlock = null;
   }
 
   start() {
@@ -14,7 +15,9 @@ class Game {
     this.levelDesigner(this.selectedLevel);
 
     let intervalId = setInterval(() => {
-
+      if (this.keysGrabbed === 3 && this.player.positionX === this.exitBlock.positionX && this.player.positionY === this.exitBlock.positionY){
+        console.log("GET OUT");
+      }
     }, 10);
   
   }
@@ -57,13 +60,13 @@ class Game {
             drawnLevel[row].splice(column, 0, this.player);
             break;
           case 4:
-            const exit = new Exit();
-            exit.domElement = createDomElement("exit");
-            exit.positionX = column * 80;
-            exit.positionY = row * 80;
-            drawDomElement(exit);
+            this.exitBlock = new Exit();
+            this.exitBlock.domElement = createDomElement("exit");
+            this.exitBlock.positionX = column * 80;
+            this.exitBlock.positionY = row * 80;
+            drawDomElement(this.exitBlock);
             // Mudar futuramente para em vez de wall ser o objeto Exit
-            drawnLevel[row].splice(column, 0, exit);
+            drawnLevel[row].splice(column, 0, this.exitBlock);
             break;
         }
       }
@@ -82,8 +85,8 @@ class Game {
         switch (selectedLevel[y][x - 1]){
           case 1: return false;
           case 2:
-            this.grabKey(this.drawnLevel[y][x - 1], this.drawnLevel);
-            this.drawnLevel[y][x - 1] = 0;
+            this.grabKey(this.drawnLevel[y][x - 1]);
+            this.selectedLevel[y][x - 1] = 0;
             return true;
           default: return true;
         }
@@ -91,8 +94,8 @@ class Game {
         switch (selectedLevel[y][x + 1]){
           case 1: return false;
           case 2:
-            this.grabKey(this.drawnLevel[y][x + 1], this.drawnLevel);
-            this.drawnLevel[y][x + 1] = 0;
+            this.grabKey(this.drawnLevel[y][x + 1]);
+            this.selectedLevel[y][x + 1] = 0;
             return true;
           default: return true;
         }
@@ -100,8 +103,8 @@ class Game {
         switch (selectedLevel[y - 1][x]){
           case 1: return false;
           case 2:
-            this.grabKey(this.drawnLevel[y - 1][x], this.drawnLevel);
-            this.drawnLevel[y - 1][x] = 0;
+            this.grabKey(this.drawnLevel[y - 1][x]);
+            this.selectedLevel[y - 1][x] = 0;
             return true;
           default: return true;
         }
@@ -109,8 +112,8 @@ class Game {
         switch (selectedLevel[y + 1][x]){
           case 1: return false;
           case 2:
-            this.grabKey(this.drawnLevel[y + 1][x], this.drawnLevel);
-            this.drawnLevel[y + 1][x] = 0;
+            this.grabKey(this.drawnLevel[y + 1][x]);
+            this.selectedLevel[y + 1][x] = 0;
             return true;
           default: return true;
         }
@@ -121,11 +124,7 @@ class Game {
 
   }
 
-  itemCollision(){
-
-  }
-
-  grabKey(key, drawnLevel){
+  grabKey(key){
     key.domElement.remove();
     this.keysGrabbed ++;
   }

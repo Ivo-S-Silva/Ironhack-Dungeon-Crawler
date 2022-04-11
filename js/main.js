@@ -31,22 +31,18 @@ document.addEventListener("keydown", function (event) {
       case "d":
       case "D":
         game.movePlayer("right");
-        console.log(game.player);
         break;
       case "a":
       case "A":
         game.movePlayer("left");
-        console.log(game.player);
         break;
       case "w":
       case "W":
         game.movePlayer("up");
-        console.log(game.player);
         break;
       case "s":
       case "S":
         game.movePlayer("down");
-        console.log(game.player);
         break;
     }
   });
