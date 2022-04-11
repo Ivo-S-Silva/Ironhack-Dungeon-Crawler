@@ -16,7 +16,7 @@ class Game {
     this.levelDesigner(this.currentLevel);
 
     let intervalId = setInterval(() => {
-      if (this.keysGrabbed === 0 && this.player.positionX === this.exitBlock.positionX && this.player.positionY === this.exitBlock.positionY){
+      if (this.keysGrabbed === 3 && this.player.positionX === this.exitBlock.positionX && this.player.positionY === this.exitBlock.positionY){
         this.selectedLevel ++;
         this.currentLevel = levels[this.selectedLevel];
         this.gameBoard.innerHTML = "";
