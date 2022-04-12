@@ -12,6 +12,7 @@ class Game {
     this.exitBlock = null;
     this.enemiesArray = [];
     this.exitArea = [];
+    this.teleportArray = [];
   }
 
   start() {
@@ -21,26 +22,34 @@ class Game {
     let moveCounter = 0;
 
     let intervalId = setInterval(() => {
-      //function to change the exit display to open
+      //function to change the exit display to open and exit functionality
       if (this.keysGrabbed === 6) {
         this.exitArea.forEach((element) => {
           element.domElement.className = "exit-open";
+          
+        });
 
-          // Functiontransfer to the next level
-          if (
-            this.player.positionX === element.positionX &&
-            this.player.positionY === element.positionY
-          ) {
-            this.selectedLevel++;
-            this.currentLevel = levels[this.selectedLevel];
-            
-            this.levelDesigner(this.currentLevel);
-          }
+        // Function to transfer to the next level
+        this.exitArea.forEach((element) => {
+
+             if (
+              this.player.positionX === element.positionX &&
+              this.player.positionY === element.positionY
+            ) {
+              this.selectedLevel++;
+              this.currentLevel = levels[this.selectedLevel];
+              this.gameboard.innerHTML = "";
+              this.drawnLevel = drawnLevel;
+              this.enemiesArray = [];
+              this.exitArea = [];
+              this.keysGrabbed = 0;
+              this.levelDesigner(this.currentLevel);
+            }
         });
       }
 
       // Time management for enemy movement
-      if (moveCounter === 6) {
+      if (moveCounter === 80) {
         this.enemiesArray.forEach((enemy) =>{
           this.moveEnemy(enemy, this.currentLevel);
         }
@@ -55,6 +64,8 @@ class Game {
       }
       );
 
+      // player-teleport location detection and functionality
+      this.teleportPlayer();
       
     }, 10);
   }
@@ -132,6 +143,16 @@ class Game {
             this.drawDomElement(enemy);
             this.drawnLevel[row].splice(column, 0, enemy);
             this.enemiesArray.push(enemy);
+            break;
+          case 6:
+            const teleport = new Teleport();
+            teleport.domElement = this.createDomElement("teleport");
+            teleport.positionX = column * 40;
+            teleport.positionY = row * 40;
+            this.drawDomElement(teleport);
+            this.drawnLevel[row].splice(column, 0, teleport);
+            this.teleportArray.push(teleport);
+            break;
         }
       }
     }
@@ -226,9 +247,9 @@ class Game {
 
     if (enemy.direction === "left") {
       if (currentLevel[y][x - 1] !== 1) {
-        enemy.moveLeft();
         currentLevel[y][x - 1] = 5;
         currentLevel[y][x] = 0;
+        enemy.moveLeft();
         this.drawDomElement(enemy);
       } else if (currentLevel[y][x - 1] === 1) {
         enemy.direction = "right";
@@ -238,15 +259,39 @@ class Game {
 
     if (enemy.direction === "right") {
       if (currentLevel[y][x + 1] !== 1) {
-        enemy.moveRight();
         currentLevel[y][x + 1] = 5;
         currentLevel[y][x] = 0;
+        enemy.moveRight();
         this.drawDomElement(enemy);
       } else if (currentLevel[y][x + 1] === 1) {
         enemy.direction = "left";
         this.drawDomElement(enemy);
       }
     }
+  }
+
+  teleportPlayer(){
+    this.teleportArray.forEach((teleport,index) => {
+      if (this.player.positionX === teleport.positionX && this.player.positionY === teleport.positionY){
+        switch(index){
+          case 0:
+            this.player.positionX = this.teleportArray[5].positionX;
+            this.player.positionY = this.teleportArray[5].positionY;
+            this.drawDomElement(this.player);
+            break;
+          case 3:
+            this.player.positionX = this.teleportArray[2].positionX;
+            this.player.positionY = this.teleportArray[2].positionY;
+            this.drawDomElement(this.player);
+            break;
+          case 4:
+            this.player.positionX = this.teleportArray[1].positionX;
+            this.player.positionY = this.teleportArray[1].positionY;
+            this.drawDomElement(this.player);
+            break;
+        }
+    }
+  });
   }
 }
 
@@ -332,5 +377,15 @@ class Enemy {
 
   moveLeft() {
     this.positionX -= 40;
+  }
+}
+
+class Teleport {
+  constructor() {
+    this.positionX = 1;
+    this.positionY = 1;
+    this.height = 40;
+    this.width = 40;
+    this.domElement = 0;
   }
 }

@@ -119,6 +119,13 @@ body{
     background-size: cover;
 }
 
+.teleport {
+    position: absolute;
+    background-image: url(../resources/images/water-on.webp);
+    background-position: center;
+    background-size: cover;
+}
+
 h1, h2{
     width: 170px;
 }
