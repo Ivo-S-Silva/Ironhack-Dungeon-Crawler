@@ -1,10 +1,10 @@
 class Game {
   constructor(createDomElement, drawDomElement) {
-    this.gameBoard = document.getElementById("gameboard");
+    this.gameboard = document.getElementById("gameboard");
     this.currentLevelDom = document.getElementById("current-level");
     this.createDomElement = createDomElement;
     this.drawDomElement = drawDomElement;
-    this.selectedLevel = 2;
+    this.selectedLevel = 3;
     this.currentLevel = levels[this.selectedLevel];
     this.drawnLevel = drawnLevel;
     this.keysGrabbed = 0;
@@ -33,25 +33,27 @@ class Game {
           ) {
             this.selectedLevel++;
             this.currentLevel = levels[this.selectedLevel];
-            this.gameBoard.innerHTML = "";
+            
             this.levelDesigner(this.currentLevel);
-            this.keysGrabbed = 0;
           }
         });
       }
 
-      // Time management for enemy movement and enemy-player collision detection
-      if (moveCounter >= 5) {
+      // Time management for enemy movement
+      if (moveCounter === 6) {
         this.enemiesArray.forEach((enemy) =>{
           this.moveEnemy(enemy, this.currentLevel);
-          this.playerEnemyCollision(enemy);
         }
         );
         moveCounter = 0;
       }
-
       moveCounter++;
 
+      // enemy-player collision detection - function calling
+      this.enemiesArray.forEach((enemy) =>{
+        this.playerEnemyCollision(enemy);
+      }
+      );
 
       
     }, 10);
@@ -64,19 +66,20 @@ class Game {
       this.player.positionY < enemy.positionY +enemy.height &&
       this.player.height + this.player.positionY >enemy.positionY
     ) {
-      // completely resets the level and every item caught
-      this.gameBoard.innerHTML = "";
-      // Fix the level reset to show keys again
+      //Clearing everything so level can be redrawn
       this.currentLevel = levels[this.selectedLevel];
-      console.log(this.currentLevel);
-      this.levelDesigner(this.currentLevel);
+      this.gameboard.innerHTML = "";
+      this.drawnLevel = drawnLevel;
+      this.enemiesArray = [];
+      this.exitArea = [];
       this.keysGrabbed = 0;
+      this.levelDesigner(this.currentLevel);
     }
   }
 
   levelDesigner(currentLevel) {
     this.currentLevelDom.innerText = this.selectedLevel;
-
+    
     for (let row = 0; row < currentLevel.length; row++) {
       for (let column = 0; column < currentLevel.length; column++) {
         switch (currentLevel[row][column]) {
@@ -86,7 +89,7 @@ class Game {
             path.positionX = column * 40;
             path.positionY = row * 40;
             this.drawDomElement(path);
-            drawnLevel[row].splice(column, 0, path);
+            this.drawnLevel[row].splice(column, 0, path);
             break;
           case 1:
             const wall = new Wall();
@@ -94,7 +97,7 @@ class Game {
             wall.positionX = column * 40;
             wall.positionY = row * 40;
             this.drawDomElement(wall);
-            drawnLevel[row].splice(column, 0, wall);
+            this.drawnLevel[row].splice(column, 0, wall);
             break;
           case 2:
             const key = new Key();
@@ -102,7 +105,7 @@ class Game {
             key.positionX = column * 40;
             key.positionY = row * 40;
             this.drawDomElement(key);
-            drawnLevel[row].splice(column, 0, key);
+            this.drawnLevel[row].splice(column, 0, key);
             break;
           case 3:
             this.player = new Player();
@@ -110,7 +113,7 @@ class Game {
             this.player.positionX = column * 40;
             this.player.positionY = row * 40;
             this.drawDomElement(this.player);
-            drawnLevel[row].splice(column, 0, this.player);
+            this.drawnLevel[row].splice(column, 0, this.player);
             break;
           case 4:
             this.exitBlock = new Exit();
@@ -118,7 +121,7 @@ class Game {
             this.exitBlock.positionX = column * 40;
             this.exitBlock.positionY = row * 40;
             this.drawDomElement(this.exitBlock);
-            drawnLevel[row].splice(column, 0, this.exitBlock);
+            this.drawnLevel[row].splice(column, 0, this.exitBlock);
             this.exitArea.push(this.exitBlock);
             break;
           case 5:
@@ -139,6 +142,7 @@ class Game {
     instead of the dom position */
     let x = entity.positionX / 40;
     let y = entity.positionY / 40;
+
     switch (direction) {
       case "left":
         switch (currentLevel[y][x - 1]) {
@@ -146,7 +150,6 @@ class Game {
             return false;
           case 2:
             this.grabKey(this.drawnLevel[y][x - 1]);
-            this.currentLevel[y][x - 1] = 0;
             return true;
           default:
             return true;
@@ -157,7 +160,6 @@ class Game {
             return false;
           case 2:
             this.grabKey(this.drawnLevel[y][x + 1]);
-            this.currentLevel[y][x + 1] = 0;
             return true;
           default:
             return true;
@@ -168,7 +170,6 @@ class Game {
             return false;
           case 2:
             this.grabKey(this.drawnLevel[y - 1][x]);
-            this.currentLevel[y - 1][x] = 0;
             return true;
           default:
             return true;
@@ -179,7 +180,6 @@ class Game {
             return false;
           case 2:
             this.grabKey(this.drawnLevel[y + 1][x]);
-            this.currentLevel[y + 1][x] = 0;
             return true;
           default:
             return true;
