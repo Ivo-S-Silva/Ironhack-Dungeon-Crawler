@@ -4,7 +4,7 @@ class Game {
     this.currentLevelDom = document.getElementById("current-level");
     this.createDomElement = createDomElement;
     this.drawDomElement = drawDomElement;
-    this.selectedLevel = 3;
+    this.selectedLevel = 1;
     this.currentLevel = levels[this.selectedLevel];
     this.drawnLevel = drawnLevel;
     this.keysGrabbed = 0;
