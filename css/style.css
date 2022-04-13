@@ -72,6 +72,24 @@ body{
     z-index: 9000;
 }
 
+#lives {
+    display: flex;
+    height: 30px;
+    width: 100px;
+}
+
+#lives1, #lives2, #lives3 {
+    height: 30px;
+    width: 30px;
+    display: block;
+}
+
+
+.life {
+    height: 30px;
+    width: 30px;
+}
+
 .wall {
     position: absolute;
     background-color: black;
