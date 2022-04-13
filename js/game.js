@@ -4,10 +4,11 @@ class Game {
     this.currentLevelDom = document.getElementById("current-level");
     this.createDomElement = createDomElement;
     this.drawDomElement = drawDomElement;
-    this.selectedLevel = 1;
+    this.selectedLevel = 2;
     this.currentLevel = levels[this.selectedLevel];
     this.drawnLevel = drawnLevel;
     this.keysGrabbed = 0;
+    this.keysArray = [];
     this.player = null;
     this.exitBlock = null;
     this.enemiesArray = [];
@@ -23,33 +24,28 @@ class Game {
 
     let intervalId = setInterval(() => {
       //function to change the exit display to open and exit functionality
-      if (this.keysGrabbed === 6) {
+      if (this.keysGrabbed >= 6) {
         this.exitArea.forEach((element) => {
           element.domElement.className = "exit-open";
-          
         });
 
         // Function to transfer to the next level
         this.exitArea.forEach((element) => {
 
              if (
-              this.player.positionX === element.positionX &&
-              this.player.positionY === element.positionY
+              this.player.positionX < element.positionX + element.width &&
+              this.player.positionX + this.player.width >element.positionX &&
+              this.player.positionY < element.positionY + element.height &&
+              this.player.height + this.player.positionY >element.positionY
             ) {
               this.selectedLevel++;
-              this.currentLevel = levels[this.selectedLevel];
-              this.gameboard.innerHTML = "";
-              this.drawnLevel = drawnLevel;
-              this.enemiesArray = [];
-              this.exitArea = [];
-              this.keysGrabbed = 0;
-              this.levelDesigner(this.currentLevel);
+              this.resetBoard();
             }
         });
       }
 
       // Time management for enemy movement
-      if (moveCounter === 80) {
+      if (moveCounter === 10) {
         this.enemiesArray.forEach((enemy) =>{
           this.moveEnemy(enemy, this.currentLevel);
         }
@@ -70,22 +66,28 @@ class Game {
     }, 10);
   }
 
+  resetBoard() {
+    this.currentLevel = levels[this.selectedLevel];
+    this.gameboard.innerHTML = "";
+    this.drawnLevel = drawnLevel;
+    this.enemiesArray = [];
+    this.exitArea = [];
+    this.keysGrabbed = 0;
+    //resetting key position and availability
+    this.keysArray.forEach(key => {
+      this.currentLevel[key.positionY / 40][key.positionX / 40] = 2;
+    })
+    this.keysArray = [];
+    this.levelDesigner(this.currentLevel);
+  }
+
   playerEnemyCollision(enemy){
     if (
-      this.player.positionX <enemy.positionX +enemy.width &&
+      this.player.positionX < enemy.positionX + enemy.width &&
       this.player.positionX + this.player.width >enemy.positionX &&
-      this.player.positionY < enemy.positionY +enemy.height &&
+      this.player.positionY < enemy.positionY + enemy.height &&
       this.player.height + this.player.positionY >enemy.positionY
-    ) {
-      //Clearing everything so level can be redrawn
-      this.currentLevel = levels[this.selectedLevel];
-      this.gameboard.innerHTML = "";
-      this.drawnLevel = drawnLevel;
-      this.enemiesArray = [];
-      this.exitArea = [];
-      this.keysGrabbed = 0;
-      this.levelDesigner(this.currentLevel);
-    }
+    ) { this.resetBoard() }
   }
 
   levelDesigner(currentLevel) {
@@ -117,6 +119,7 @@ class Game {
             key.positionY = row * 40;
             this.drawDomElement(key);
             this.drawnLevel[row].splice(column, 0, key);
+            this.keysArray.push(key);
             break;
           case 3:
             this.player = new Player();
@@ -171,6 +174,7 @@ class Game {
             return false;
           case 2:
             this.grabKey(this.drawnLevel[y][x - 1]);
+            this.currentLevel[y][x - 1] = 0;
             return true;
           default:
             return true;
@@ -181,6 +185,7 @@ class Game {
             return false;
           case 2:
             this.grabKey(this.drawnLevel[y][x + 1]);
+            this.currentLevel[y][x + 1] = 0;
             return true;
           default:
             return true;
@@ -191,6 +196,7 @@ class Game {
             return false;
           case 2:
             this.grabKey(this.drawnLevel[y - 1][x]);
+            this.currentLevel[y - 1][x] = 0;
             return true;
           default:
             return true;
@@ -201,6 +207,7 @@ class Game {
             return false;
           case 2:
             this.grabKey(this.drawnLevel[y + 1][x]);
+            this.currentLevel[y + 1][x] = 0;
             return true;
           default:
             return true;
@@ -211,6 +218,8 @@ class Game {
   grabKey(key) {
     key.domElement.remove();
     this.keysGrabbed++;
+    key.keyGrabSound.play();
+    if(this.keysGrabbed === 6) key.openDoorSound.play();
   }
 
   movePlayer(direction) {
@@ -246,24 +255,24 @@ class Game {
     let y = enemy.positionY / 40;
 
     if (enemy.direction === "left") {
-      if (currentLevel[y][x - 1] !== 1) {
+      if (currentLevel[y][x - 1] !== 1 && currentLevel[y][x - 1] !== 2) {
         currentLevel[y][x - 1] = 5;
         currentLevel[y][x] = 0;
         enemy.moveLeft();
         this.drawDomElement(enemy);
-      } else if (currentLevel[y][x - 1] === 1) {
+      } else if (currentLevel[y][x - 1] === 1 || currentLevel[y][x - 1] === 2) {
         enemy.direction = "right";
         this.drawDomElement(enemy);
       }
     }
 
     if (enemy.direction === "right") {
-      if (currentLevel[y][x + 1] !== 1) {
+      if (currentLevel[y][x + 1] !== 1 && currentLevel[y][x + 1] !== 2) {
         currentLevel[y][x + 1] = 5;
         currentLevel[y][x] = 0;
         enemy.moveRight();
         this.drawDomElement(enemy);
-      } else if (currentLevel[y][x + 1] === 1) {
+      } else if (currentLevel[y][x + 1] === 1 || currentLevel[y][x + 1] === 2) {
         enemy.direction = "left";
         this.drawDomElement(enemy);
       }
@@ -278,16 +287,19 @@ class Game {
             this.player.positionX = this.teleportArray[5].positionX;
             this.player.positionY = this.teleportArray[5].positionY;
             this.drawDomElement(this.player);
+            teleport.sound.play();
             break;
           case 3:
             this.player.positionX = this.teleportArray[2].positionX;
             this.player.positionY = this.teleportArray[2].positionY;
             this.drawDomElement(this.player);
+            teleport.sound.play();
             break;
           case 4:
-            this.player.positionX = this.teleportArray[1].positionX;
-            this.player.positionY = this.teleportArray[1].positionY;
+            this.player.positionX = this.teleportArray[2].positionX;
+            this.player.positionY = this.teleportArray[2].positionY;
             this.drawDomElement(this.player);
+            teleport.sound.play();
             break;
         }
     }
@@ -319,8 +331,8 @@ class Exit {
   constructor() {
     this.positionX = 1;
     this.positionY = 1;
-    this.height = 40;
-    this.width = 40;
+    this.height = 80;
+    this.width = 80;
     this.domElement = 0;
   }
 }
@@ -332,6 +344,8 @@ class Key {
     this.height = 40;
     this.width = 40;
     this.domElement = 0;
+    this.keyGrabSound = new Audio('../resources/sounds/key-grab.wav');
+    this.openDoorSound = new Audio('../resources/sounds/door-open.wav');
   }
 }
 
@@ -342,6 +356,7 @@ class Player {
     this.height = 40;
     this.width = 40;
     this.domElement = 0;
+    this.dyingSound = new Audio('../resources/sounds/player-dies.wav');
   }
 
   moveRight() {
@@ -387,5 +402,6 @@ class Teleport {
     this.height = 40;
     this.width = 40;
     this.domElement = 0;
+    this.sound = new Audio('../resources/sounds/teleport.flac');
   }
 }

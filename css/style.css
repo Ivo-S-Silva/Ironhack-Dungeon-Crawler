@@ -100,14 +100,14 @@ body{
 
 .exit-closed {
     position: absolute;
-    background-image: url(../resources/images/water-off.webp);
+    background-image: url(../resources/images/door-closed.png);
     background-position: center;
     background-size: cover;
 }
 
 .exit-open {
     position: absolute;
-    background-image: url(../resources/images/water-on.webp);
+    background-image: url(../resources/images/door-open.png);
     background-position: center;
     background-size: cover;
 }
@@ -121,7 +121,7 @@ body{
 
 .teleport {
     position: absolute;
-    background-image: url(../resources/images/water-on.webp);
+    background-image: url(../resources/images/teleport.png);
     background-position: center;
     background-size: cover;
 }
