@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pac-Clone</title>
+    <link rel="stylesheet" href="./css/reset.css">
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <header id="scoreboard">
+        <div id="current-level-elm"></div>
+    </header>
+    <section id="gaming-area">
+        <div id="menu">
+            <h1>Menu</h1>
+            <br>
+            <h2>Current Level:</h2> Level <span id="current-level"></span>
+            <br><br>
+            <h2>Lives:</h2>
+            <div id="lives">
+                <div id="lives1"><img class="life" src="./resources/images/heart.png" alt="heart"></div>
+                <div id="lives2"><img class="life" src="./resources/images/heart.png" alt="heart"></div>
+                <div id="lives3"><img class="life" src="./resources/images/heart.png" alt="heart"></div>
+            </div>
+            <br><br>
+            <h2>Movement:</h2>
+            <p>W-A-S-D Keys</p>
+            <br>
+            <h2>Objective:</h2>
+            <p>Grab the 6 keys and get to the exit.</p>
+        </div>
+        <div id="gameboard"></div>
+
+    </section>
+    <footer>
+
+    </footer>
+
+    
+    <script src="./js/levels.js"></script>
+    <script src="./js/game.js"></script>
+    <script src="./js/main.js"></script>
+</body>
+</html>
