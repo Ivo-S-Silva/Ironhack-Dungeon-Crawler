@@ -33,7 +33,7 @@ class Game {
         this.keysArray.forEach(key => {
           this.currentLevel[key.positionY / 40][key.positionX / 40] = 0;
         })
-        
+        this.keysArray = [];
         this.teleportArray = [];
         this.selectedLevel = 0;
         this.playerLives = 3;
@@ -60,23 +60,7 @@ class Game {
             }
       } 
       
-      if (this.selectedLevel === 0){
-        // On game over level and ending level, exit defaults to open
-        this.exit.domElement.className ="exit-open";
-        if (
-          this.player.positionX < this.exit.positionX + this.exit.width &&
-          this.player.positionX + this.player.width >this.exit.positionX &&
-          this.player.positionY < this.exit.positionY + this.exit.height &&
-          this.player.height + this.player.positionY >this.exit.positionY
-        ) {
-          this.selectedLevel = 1;
-          this.keysArray = [];
-          this.teleportArray = [];
-          this.resetBoard();
-        }
-      } 
-      
-      if (this.selectedLevel === 4) {
+      if (this.selectedLevel === 0 || this.selectedLevel === 4) {
         this.exit.domElement.className ="exit-open";
         if (
           this.player.positionX < this.exit.positionX + this.exit.width &&
@@ -117,11 +101,9 @@ class Game {
     this.exit = null;
     this.keysGrabbed = 0;
     //resetting key position and availability
-  if (this.selectedLevel != 0){
       this.keysArray.forEach(key => {
       this.currentLevel[key.positionY / 40][key.positionX / 40] = 2;
-    })
-  }
+      });
     this.levelDesigner(this.currentLevel);
   }
 
@@ -419,8 +401,8 @@ class Key {
     this.height = 40;
     this.width = 40;
     this.domElement = 0;
-    this.keyGrabSound = new Audio('../resources/sounds/key-grab.wav');
-    this.openDoorSound = new Audio('../resources/sounds/door-open.wav');
+    this.keyGrabSound = new Audio(document.getElementById("key-grab").src);
+    this.openDoorSound = new Audio(document.getElementById("door-open").src);
   }
 }
 
@@ -431,7 +413,7 @@ class Player {
     this.height = 40;
     this.width = 40;
     this.domElement = 0;
-    this.dyingSound = new Audio('../resources/sounds/player-dies.wav');
+    this.dyingSound = new Audio(document.getElementById("player-dies").src);
   }
 
   moveRight() {
@@ -477,6 +459,6 @@ class Teleport {
     this.height = 40;
     this.width = 40;
     this.domElement = 0;
-    this.sound = new Audio('../resources/sounds/teleport.flac');
+    this.sound = new Audio(document.getElementById("teleport").src);
   }
 }
