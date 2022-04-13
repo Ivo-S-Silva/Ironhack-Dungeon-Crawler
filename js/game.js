@@ -58,7 +58,9 @@ class Game {
               this.teleportArray = [];
               this.resetBoard();
             }
-      } else if (this.selectedLevel === 0 || this.selectedLevel === 4){
+      } 
+      
+      if (this.selectedLevel === 0){
         // On game over level and ending level, exit defaults to open
         this.exit.domElement.className ="exit-open";
         if (
@@ -72,7 +74,19 @@ class Game {
           this.teleportArray = [];
           this.resetBoard();
         }
-      }
+      } 
+      
+      if (this.selectedLevel === 4) {
+        this.exit.domElement.className ="exit-open";
+        if (
+          this.player.positionX < this.exit.positionX + this.exit.width &&
+          this.player.positionX + this.player.width >this.exit.positionX &&
+          this.player.positionY < this.exit.positionY + this.exit.height &&
+          this.player.height + this.player.positionY >this.exit.positionY
+        ) {
+        window.open("../index.html","_self");
+        }
+      };
 
       // Time management for enemy movement
       if (moveCounter === 10) {
