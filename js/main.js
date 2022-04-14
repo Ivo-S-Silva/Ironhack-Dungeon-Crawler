@@ -51,3 +51,24 @@ document.addEventListener("keydown", function (event) {
   });
 
 
+// Adding event listener for shooting functionality
+document.addEventListener("keydown", function (event) {
+  /*Every time an event is fired, you can get the information about it in a variable 
+that can be passed inside the function of the event. Using developer tools it's possible to
+see all the properties it has to be able to interact with it.*/
+
+  switch (event.key) {
+    case "ArrowRight":
+      game.shootPlayer("right");
+      break;
+    case "ArrowLeft":
+      game.shootPlayer("left");
+      break;
+    case "ArrowUp":
+      game.shootPlayer("up");
+      break;
+    case "ArrowDown":
+      game.shootPlayer("down");
+      break;
+  }
+});

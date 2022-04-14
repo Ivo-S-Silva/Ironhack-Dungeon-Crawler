@@ -104,9 +104,14 @@ body{
     width: 30px;
 }
 
+ .key, .player, .exit-closed, .exit-open, .enemy, .teleport, .bullet, .fire-altar-on, .fire-altar-off {
+    position: absolute;
+    background-position: center;
+    background-size: cover;
+}
+
 .wall {
     position: absolute;
-    background-color: black;
     background-image: url(../resources/images/brick-texture.jpeg);
 }
 
@@ -116,46 +121,36 @@ body{
 }
 
 .key {
-    position: absolute;
     background-image: url(../resources/images/key.webp);
-    background-position: center;
-    background-size: cover;
 }
 
 .player {
-    position: absolute;
     z-index: 9000;
     background-image: url(../resources/images/player.png);
-    background-position: center;
-    background-size: cover;
 }
 
 .exit-closed {
-    position: absolute;
     background-image: url(../resources/images/door-closed.png);
-    background-position: center;
-    background-size: cover;
 }
 
 .exit-open {
-    position: absolute;
     background-image: url(../resources/images/door-open.png);
-    background-position: center;
-    background-size: cover;
 }
 
 .enemy {
-    position: absolute;
     background-image: url(../resources/images/blade.png);
-    background-position: center;
-    background-size: cover;
 }
 
 .teleport {
-    position: absolute;
     background-image: url(../resources/images/teleport.png);
-    background-position: center;
-    background-size: cover;
+}
+
+.bullet {
+    background-image: url(../resources/images/fireball.png);
+}
+
+.fire-altar-on, .fire-altar-off {
+    background-image: url(../resources/images/fire-altar.png);
 }
 
 h1, h2{
