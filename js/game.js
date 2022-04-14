@@ -1,5 +1,6 @@
 class Game {
   constructor(createDomElement, drawDomElement) {
+    this.backgroundMusic = new Audio(document.getElementById("background-music").src);
     this.gameboard = document.getElementById("gameboard");
     this.currentLevelDom = document.getElementById("current-level");
     this.livesScoreboard = document.getElementById("lives");
@@ -22,6 +23,10 @@ class Game {
   }
 
   start() {
+    this.backgroundMusic.loop = true;
+    this.backgroundMusic.volume = 0.1;
+    this.backgroundMusic.play();
+
     this.keysGrabbed = 0;
     this.levelDesigner(this.currentLevel);
 
