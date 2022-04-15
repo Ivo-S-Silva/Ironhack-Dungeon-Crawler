@@ -79,7 +79,7 @@ class Game {
           this.player.positionY < this.exit.positionY + this.exit.height &&
           this.player.height + this.player.positionY > this.exit.positionY
         ) {
-          window.open("../", "_self");
+          window.history.back();
         }
       }
 
