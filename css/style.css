@@ -50,21 +50,12 @@ body{
   position: relative;
 }
 
-#scoreboard {
-    height: 50px;
-    width: 100%;
-}
-
-#current-level-elm {
-    position: absolute;
-    top: 15px;
-    left: 30%;
-}
 
 #menu {
     background-image: url(../resources/images/papyrus.webp);
     background-position-x: center;
     background-position-y: -30px;
+    margin-top: 10px;
     position: absolute;
     left: 10%;
     right: 0;
@@ -78,6 +69,7 @@ body{
     position: absolute;
     left: 0;
     right: 0;
+    margin-top: 10px;
     margin-left: auto;
     margin-right: auto;
     height: 880px;
